@@ -8,37 +8,94 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  position: relative;
+  /* Base + warm / cool atmosphere (still dark-first) */
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -30%, rgba(130, 125, 200, 0.12), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 100% 20%, rgba(90, 140, 200, 0.09), transparent 50%),
+    radial-gradient(ellipse 55% 45% at 0% 85%, rgba(210, 175, 130, 0.07), transparent 45%),
+    radial-gradient(circle at 15% 15%, rgba(255, 255, 255, 0.06), transparent 28%),
+    radial-gradient(circle at 85% 88%, rgba(255, 255, 255, 0.04), transparent 32%),
+    linear-gradient(168deg, #020202 0%, #080809 38%, #0c0c0e 72%, #0a0a0c 100%);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
+}
+
+/* Slow drifting light wash (adds life without loud color) */
+.bg-mesh {
+  position: fixed;
+  inset: -20%;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 25% 35%, rgba(255, 245, 230, 0.055), transparent 42%),
+    radial-gradient(circle at 78% 62%, rgba(170, 205, 255, 0.06), transparent 48%),
+    radial-gradient(circle at 50% 100%, rgba(140, 130, 190, 0.05), transparent 50%);
+  animation: ambient-drift 22s ease-in-out infinite alternate;
+  opacity: 0.95;
+}
+
+@keyframes ambient-drift {
+  0% {
+    transform: translate(-2%, -1%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(2%, 1%) rotate(0.5deg) scale(1.02);
+  }
+  100% {
+    transform: translate(-1%, 2%) rotate(-0.3deg) scale(1.01);
+  }
 }
 
 /* subtle floating orbs in background */
 .bg-orb {
   position: fixed;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
+  filter: blur(100px);
+  opacity: 0.22;
   pointer-events: none;
   z-index: 0;
+  mix-blend-mode: screen;
 }
 
 .bg-orb-1 {
-  width: 600px;
-  height: 600px;
-  background: #7c3aed;
-  top: -200px;
-  left: -100px;
+  width: 620px;
+  height: 620px;
+  background: radial-gradient(circle, rgba(190, 175, 255, 0.45) 0%, rgba(45, 40, 60, 0.2) 55%, transparent 70%);
+  top: -220px;
+  left: -120px;
   animation: float-orb 20s ease-in-out infinite;
 }
 
 .bg-orb-2 {
-  width: 500px;
-  height: 500px;
-  background: #06b6d4;
-  bottom: -150px;
-  right: -100px;
+  width: 520px;
+  height: 520px;
+  background: radial-gradient(circle, rgba(120, 185, 230, 0.35) 0%, rgba(30, 45, 58, 0.18) 55%, transparent 70%);
+  bottom: -160px;
+  right: -110px;
   animation: float-orb 25s ease-in-out infinite reverse;
+}
+
+.bg-orb-3 {
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(235, 210, 175, 0.14) 0%, rgba(60, 48, 38, 0.1) 60%, transparent 72%);
+  top: 38%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: float-orb-soft 28s ease-in-out infinite;
+  opacity: 0.18;
+  mix-blend-mode: soft-light;
+}
+
+@keyframes float-orb-soft {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) translate(-24px, 18px) scale(1.06);
+  }
 }
 
 @keyframes float-orb {
@@ -56,13 +113,19 @@ body {
 
 /* --- Glass card --- */
 .glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 255, 255, 0.03) 45%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.11);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 12px 44px rgba(0, 0, 0, 0.5),
+    0 0 60px -24px rgba(130, 150, 210, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 /* --- Mic button --- */
@@ -73,12 +136,43 @@ body {
   justify-content: center;
 }
 
+.mic-btn-wrapper::before {
+  content: '';
+  position: absolute;
+  width: min(280px, 85vw);
+  height: 120px;
+  left: 50%;
+  bottom: -36px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse 70% 55% at 50% 50%,
+    rgba(140, 160, 220, 0.2),
+    rgba(100, 120, 180, 0.06) 45%,
+    transparent 70%
+  );
+  filter: blur(22px);
+  pointer-events: none;
+  z-index: 0;
+  animation: mic-pool 8s ease-in-out infinite alternate;
+}
+
+@keyframes mic-pool {
+  0% {
+    opacity: 0.75;
+    transform: translateX(-50%) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1.06);
+  }
+}
+
 .pulse-ring {
   position: absolute;
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  border: 2px solid rgba(139, 92, 246, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s;
@@ -103,13 +197,13 @@ body {
 @keyframes pulse-expand {
   0% {
     transform: scale(1);
-    opacity: 0.6;
-    border-color: rgba(139, 92, 246, 0.6);
+    opacity: 0.55;
+    border-color: rgba(180, 195, 255, 0.42);
   }
   100% {
     transform: scale(2.2);
     opacity: 0;
-    border-color: rgba(6, 182, 212, 0);
+    border-color: rgba(120, 185, 220, 0);
   }
 }
 
@@ -117,16 +211,19 @@ body {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   cursor: pointer;
-  background: linear-gradient(135deg, #7c3aed, #6366f1);
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.12), transparent 52%),
+    linear-gradient(155deg, #2a2a2c 0%, #18181a 48%, #121214 100%);
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow:
-    0 4px 20px rgba(124, 58, 237, 0.4),
-    0 0 0 0 rgba(124, 58, 237, 0);
+    0 10px 28px rgba(0, 0, 0, 0.58),
+    0 0 40px -12px rgba(130, 155, 220, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
   transition: all 0.3s ease;
   position: relative;
   z-index: 1;
@@ -135,8 +232,9 @@ body {
 #mic-btn:hover {
   transform: scale(1.08);
   box-shadow:
-    0 6px 30px rgba(124, 58, 237, 0.5),
-    0 0 0 4px rgba(124, 58, 237, 0.15);
+    0 16px 36px rgba(0, 0, 0, 0.68),
+    0 0 48px -10px rgba(150, 175, 235, 0.28),
+    0 0 0 4px rgba(255, 255, 255, 0.06);
 }
 
 #mic-btn:active {
@@ -144,23 +242,28 @@ body {
 }
 
 #mic-btn.recording {
-  background: linear-gradient(135deg, #ef4444, #f97316);
+  background:
+    radial-gradient(circle at 35% 30%, rgba(255, 200, 185, 0.1), transparent 55%),
+    linear-gradient(155deg, #3a383a 0%, #222224 55%, #161618 100%);
   box-shadow:
-    0 4px 20px rgba(239, 68, 68, 0.4),
-    0 0 0 0 rgba(239, 68, 68, 0);
+    0 12px 32px rgba(0, 0, 0, 0.72),
+    0 0 56px -8px rgba(200, 165, 230, 0.2),
+    0 0 0 0 rgba(255, 255, 255, 0.06);
   animation: mic-glow 1.5s ease-in-out infinite alternate;
 }
 
 @keyframes mic-glow {
   0% {
     box-shadow:
-      0 4px 20px rgba(239, 68, 68, 0.4),
-      0 0 0 0 rgba(239, 68, 68, 0.1);
+      0 10px 28px rgba(0, 0, 0, 0.68),
+      0 0 44px -6px rgba(170, 195, 255, 0.18),
+      0 0 0 0 rgba(255, 255, 255, 0.04);
   }
   100% {
     box-shadow:
-      0 4px 30px rgba(239, 68, 68, 0.6),
-      0 0 0 8px rgba(239, 68, 68, 0.05);
+      0 12px 38px rgba(0, 0, 0, 0.82),
+      0 0 64px -4px rgba(210, 180, 255, 0.22),
+      0 0 0 10px rgba(255, 255, 255, 0.03);
   }
 }
 
@@ -168,9 +271,9 @@ body {
 .shimmer-line {
   background: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.06) 25%,
-    rgba(255, 255, 255, 0.15) 50%,
-    rgba(255, 255, 255, 0.06) 75%
+    rgba(255, 255, 255, 0.05) 20%,
+    rgba(210, 220, 255, 0.14) 50%,
+    rgba(255, 245, 235, 0.08) 80%
   );
   background-size: 200% 100%;
   border-radius: 4px;
@@ -220,25 +323,153 @@ body {
   background: rgba(255, 255, 255, 0.2);
 }
 
+/* --- Chat bubbles --- */
+.chat-row {
+  display: flex;
+  margin-bottom: 14px;
+}
+
+.chat-row-user {
+  justify-content: flex-end;
+}
+
+.chat-row-ai {
+  justify-content: flex-start;
+}
+
+.chat-bubble {
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.22),
+    0 0 26px rgba(125, 150, 220, 0.08);
+}
+
+.chat-bubble-user {
+  max-width: 78%;
+  padding: 12px 14px;
+  border-top-right-radius: 8px;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.18), transparent 44%),
+    linear-gradient(145deg, rgba(175, 205, 255, 0.17) 0%, rgba(120, 150, 220, 0.08) 48%, rgba(95, 120, 185, 0.1) 100%);
+}
+
+.chat-bubble-ai {
+  max-width: min(86%, 680px);
+  padding: 12px 14px;
+  border-top-left-radius: 8px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 82% 12%, rgba(255, 245, 230, 0.14), transparent 42%),
+    linear-gradient(150deg, rgba(255, 255, 255, 0.1) 0%, rgba(220, 235, 255, 0.05) 55%, rgba(255, 255, 255, 0.04) 100%);
+}
+
+.chat-bubble-ai::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    linear-gradient(
+      118deg,
+      rgba(140, 220, 255, 0) 18%,
+      rgba(140, 220, 255, 0.36) 34%,
+      rgba(205, 165, 255, 0.3) 47%,
+      rgba(255, 196, 210, 0.34) 56%,
+      rgba(140, 220, 255, 0) 72%
+    );
+  background-size: 220% 100%;
+  mix-blend-mode: screen;
+  transition: opacity 0.26s ease;
+}
+
+.chat-bubble-ai.ai-processing::after {
+  opacity: 0.85;
+  animation: ai-bubble-edge-flow 1.8s linear infinite;
+}
+
+@keyframes ai-bubble-edge-flow {
+  0% {
+    background-position: 190% 0;
+  }
+  100% {
+    background-position: -30% 0;
+  }
+}
+
+.chat-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.04));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.chat-bubble-float {
+  animation: bubble-float-in 0.42s cubic-bezier(0.2, 0.72, 0.2, 1);
+}
+
+@keyframes bubble-float-in {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+    filter: blur(3px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
 /* --- Hotword panel --- */
 .hotword-input {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   color: white;
+  caret-color: rgba(175, 210, 255, 0.9);
   padding: 8px 14px;
   outline: none;
   font-size: 14px;
-  transition: border-color 0.2s;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .hotword-input:focus {
-  border-color: rgba(139, 92, 246, 0.6);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  border-color: rgba(195, 215, 255, 0.45);
+  box-shadow:
+    0 0 0 3px rgba(170, 205, 255, 0.12),
+    0 0 26px rgba(150, 180, 255, 0.18),
+    inset 0 0 18px rgba(140, 170, 245, 0.08);
+  animation: hotword-caret-gradient-blink 1.05s ease-in-out infinite;
 }
 
 .hotword-input::placeholder {
   color: rgba(255, 255, 255, 0.3);
+}
+
+@keyframes hotword-caret-gradient-blink {
+  0% {
+    caret-color: rgba(140, 210, 255, 0.95);
+  }
+  35% {
+    caret-color: rgba(206, 160, 255, 1);
+  }
+  60% {
+    caret-color: rgba(255, 194, 208, 0.95);
+  }
+  100% {
+    caret-color: rgba(140, 210, 255, 0.95);
+  }
 }
 
 /* --- Toggle arrow --- */

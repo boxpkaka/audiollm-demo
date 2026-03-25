@@ -31,7 +31,7 @@
       const tag = document.createElement('span');
       tag.className =
         'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm ' +
-        'bg-white/10 text-white/90 border border-white/20 backdrop-blur-sm';
+        'bg-white/6 text-white/90 border border-white/14 backdrop-blur-sm';
       tag.innerHTML =
         `<span>${escapeHtml(word)}</span>` +
         `<button class="hover:text-red-400 transition-colors text-white/50 ml-0.5" data-idx="${idx}">&times;</button>`;
@@ -93,10 +93,10 @@
   // --- Connection status ---
   function setConnected(connected) {
     if (connected) {
-      connDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]';
+      connDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.35)]';
       connLabel.textContent = 'Connected';
     } else {
-      connDot.className = 'w-2.5 h-2.5 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]';
+      connDot.className = 'w-2.5 h-2.5 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.35)]';
       connLabel.textContent = 'Disconnected';
     }
   }
@@ -157,21 +157,19 @@
   // --- Chat bubbles ---
   function addUserBubble(segId, duration) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'flex justify-end mb-4 animate-fade-in';
+    wrapper.className = 'chat-row chat-row-user chat-bubble-float';
     wrapper.id = `user-${segId}`;
 
     wrapper.innerHTML = `
-      <div class="max-w-xs px-4 py-3 rounded-2xl rounded-tr-md
-                  bg-gradient-to-br from-indigo-500/80 to-purple-600/80
-                  backdrop-blur-md border border-white/10 text-white shadow-lg">
+      <div class="chat-bubble chat-bubble-user text-white">
         <div class="flex items-center gap-2">
           <svg class="w-4 h-4 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/>
           </svg>
-          <span class="text-sm font-medium">Voice ${duration}</span>
+          <span class="text-sm font-medium tracking-wide">Voice ${duration}</span>
         </div>
-        <div class="mt-1.5 flex gap-0.5 items-end h-4">
+        <div class="mt-2 flex gap-0.5 items-end h-4">
           ${generateWaveformBars()}
         </div>
       </div>
@@ -192,21 +190,18 @@
 
   function addAIBubble(segId) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'flex justify-start mb-4 animate-fade-in';
+    wrapper.className = 'chat-row chat-row-ai chat-bubble-float';
     wrapper.id = `ai-${segId}`;
 
     wrapper.innerHTML = `
-      <div class="flex gap-3 max-w-md">
-        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500
-                    flex items-center justify-center shadow-lg shadow-cyan-500/20">
+      <div class="flex gap-3 max-w-2xl items-start">
+        <div class="chat-avatar flex-shrink-0">
           <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
           </svg>
         </div>
-        <div class="px-4 py-3 rounded-2xl rounded-tl-md
-                    bg-white/10 backdrop-blur-md border border-white/10
-                    text-white/90 shadow-lg ai-content">
+        <div class="chat-bubble chat-bubble-ai ai-processing text-white/90 ai-content">
           <div class="shimmer-lines">
             <div class="shimmer-line w-48 h-3 mb-2"></div>
             <div class="shimmer-line w-36 h-3 mb-2"></div>
@@ -227,6 +222,7 @@
     if (!content) return;
 
     if (status === 'processing') {
+      content.classList.add('ai-processing');
       content.innerHTML = `
         <div class="shimmer-lines">
           <div class="shimmer-line w-48 h-3 mb-2"></div>
@@ -236,8 +232,10 @@
         <div class="text-xs text-white/40 mt-2">Processing...</div>
       `;
     } else if (status === 'done') {
+      content.classList.remove('ai-processing');
       content.innerHTML = `<p class="text-sm leading-relaxed typewriter">${escapeHtml(text)}</p>`;
     } else if (status === 'error') {
+      content.classList.remove('ai-processing');
       content.innerHTML = `<p class="text-sm text-red-400">${escapeHtml(text)}</p>`;
     }
 

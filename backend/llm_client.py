@@ -17,6 +17,25 @@ def build_prompt(hotwords: list[str]) -> str:
     return f"Hotwords:{hw_str}\nTranscribe the following audio:"
 
 
+def build_single_turn_messages(prompt_text: str, audio_wav_base64: str) -> list[dict]:
+    # Stateless request: always send a single user turn, never append history.
+    return [
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": prompt_text},
+                {
+                    "type": "input_audio",
+                    "input_audio": {
+                        "data": audio_wav_base64,
+                        "format": "wav",
+                    },
+                },
+            ],
+        }
+    ]
+
+
 async def query_audio_model(
     audio_wav_base64: str,
     hotwords: list[str] | None = None,
@@ -28,21 +47,7 @@ async def query_audio_model(
         f"{VLLM_BASE_URL}/v1/chat/completions",
         json={
             "model": VLLM_MODEL_NAME,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": prompt_text},
-                        {
-                            "type": "input_audio",
-                            "input_audio": {
-                                "data": audio_wav_base64,
-                                "format": "wav",
-                            },
-                        },
-                    ],
-                }
-            ],
+            "messages": build_single_turn_messages(prompt_text, audio_wav_base64),
             "max_tokens": 512,
         },
     )

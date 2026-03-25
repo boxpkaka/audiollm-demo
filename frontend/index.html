@@ -10,10 +10,12 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="text-white">
-  <!-- Background orbs -->
+<body class="text-white antialiased">
+  <!-- Background ambience -->
+  <div class="bg-mesh" aria-hidden="true"></div>
   <div class="bg-orb bg-orb-1"></div>
   <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
 
   <!-- Main container -->
   <div class="relative z-10 flex flex-col h-screen max-w-2xl mx-auto px-4">
@@ -21,8 +23,8 @@
     <!-- Header -->
     <header class="flex items-center justify-between py-4 flex-shrink-0">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600
-                    flex items-center justify-center shadow-lg">
+        <div class="w-9 h-9 rounded-xl bg-white/10 border border-white/10
+                    flex items-center justify-center shadow-sm">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
@@ -30,11 +32,11 @@
         </div>
         <div>
           <h1 class="text-lg font-semibold tracking-tight">Audio LLM Demo</h1>
-          <p class="text-xs text-white/40">Qwen2.5-Omni &middot; Real-time ASR</p>
+          <p class="text-xs text-white/40">Amphion &middot; Real-time ASR</p>
         </div>
       </div>
       <div class="flex items-center gap-2">
-        <div id="conn-dot" class="w-2.5 h-2.5 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]"></div>
+        <div id="conn-dot" class="w-2.5 h-2.5 rounded-full bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.35)]"></div>
         <span id="conn-label" class="text-xs text-white/50">Disconnected</span>
       </div>
     </header>
@@ -42,7 +44,7 @@
     <!-- Hotword toggle -->
     <div class="flex-shrink-0 mb-3">
       <button id="hotword-toggle"
-              class="flex items-center gap-2 text-sm text-white/60 hover:text-white/90 transition-colors">
+              class="flex items-center gap-2 text-sm text-white/55 hover:text-white/85 transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
@@ -58,12 +60,12 @@
                  class="hotword-input flex-1"
                  placeholder="Add hotword (comma-separated for batch)" />
           <button id="hotword-add-btn"
-                  class="px-4 py-2 rounded-xl bg-violet-600/80 hover:bg-violet-500/80
+                  class="px-4 py-2 rounded-xl bg-white/12 hover:bg-white/18 border border-white/15
                          text-sm font-medium transition-colors">
             Add
           </button>
           <button id="hotword-clear-btn"
-                  class="px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10
+                  class="px-3 py-2 rounded-xl bg-white/4 hover:bg-white/9 border border-white/10
                          text-sm text-white/50 hover:text-white/80 transition-colors">
             Clear
           </button>
@@ -76,18 +78,15 @@
     <div id="chat-area"
          class="flex-1 overflow-y-auto pr-1 mb-4 scroll-smooth">
       <!-- Welcome message -->
-      <div class="flex justify-start mb-4">
-        <div class="flex gap-3 max-w-md">
-          <div class="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500
-                      flex items-center justify-center shadow-lg shadow-cyan-500/20">
+      <div class="chat-row chat-row-ai chat-bubble-float">
+        <div class="flex gap-3 max-w-2xl items-start">
+          <div class="chat-avatar flex-shrink-0">
             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
             </svg>
           </div>
-          <div class="px-4 py-3 rounded-2xl rounded-tl-md
-                      bg-white/10 backdrop-blur-md border border-white/10
-                      text-white/80 shadow-lg text-sm leading-relaxed">
+          <div class="chat-bubble chat-bubble-ai text-white/85 text-sm leading-relaxed">
             Ready! Click the microphone button below to start speaking.
             I'll transcribe your audio in real-time.
             <br/><br/>
