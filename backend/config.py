@@ -20,7 +20,7 @@ FUSION_HOTWORD_BOOST = float(os.getenv("FUSION_HOTWORD_BOOST", "0.12"))
 FUSION_PRIMARY_SCORE_MARGIN = float(os.getenv("FUSION_PRIMARY_SCORE_MARGIN", "0.08"))
 ASR_REQUEST_TIMEOUT = float(os.getenv("ASR_REQUEST_TIMEOUT", "120"))
 
-VAD_THRESHOLD = float(os.getenv("VAD_THRESHOLD", "0.6"))
+VAD_THRESHOLD = float(os.getenv("VAD_THRESHOLD", "0.5"))
 SILENCE_DURATION_MS = int(os.getenv("SILENCE_DURATION_MS", "200"))
 # Exponential moving average smoothing for frame-level VAD probability.
 # 0 means no smoothing; closer to 1 means stronger smoothing.
